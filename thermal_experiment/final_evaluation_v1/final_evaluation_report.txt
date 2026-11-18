@@ -1,0 +1,30 @@
+THERMAL-AWARE CPU-GPU SCHEDULING
+FINAL OFFLINE EVALUATION REPORT
+========================================================================
+
+Methodology:
+- EDF is a deterministic non-preemptive simulation.
+- RT-TAS uses recorded V3.3 prediction traces.
+- Four threshold configurations are replayed.
+- Each replay uses seven synthetic tasks.
+- No real workload execution is performed.
+- No physical thermal reduction is measured here.
+
+Policy                  Tasks   Dispatched     Met   Expired  Pending   Success %
+---------------------------------------------------------------------------------
+EDF_BASELINE               63           63      63         0        0       100.0
+A_RELAXED                  63           63      63         0        0       100.0
+B_MODERATE                 63           63      63         0        0       100.0
+C_CONSERVATIVE             63           63      63         0        0       100.0
+D_STRICT                   63           45      45        12        6       71.43
+
+Resource-level results:
+------------------------------------------------------------------------
+A_RELAXED | CPU | met=36/36 | expired=0 | pending=0
+A_RELAXED | GPU | met=27/27 | expired=0 | pending=0
+B_MODERATE | CPU | met=36/36 | expired=0 | pending=0
+B_MODERATE | GPU | met=27/27 | expired=0 | pending=0
+C_CONSERVATIVE | CPU | met=36/36 | expired=0 | pending=0
+C_CONSERVATIVE | GPU | met=27/27 | expired=0 | pending=0
+D_STRICT | CPU | met=36/36 | expired=0 | pending=0
+D_STRICT | GPU | met=9/27 | expired=12 | pending=6

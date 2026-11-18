@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>WebGL GPU Test</title>
+  <style>
+    html, body { margin: 0; width: 100%; height: 100%; background: black; }
+    canvas { width: 100vw; height: 100vh; display: block; }
+    #status {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      color: white;
+      background: rgba(0,0,0,.7);
+      font: 18px monospace;
+      padding: 10px;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+<div id="status">Starting WebGL test...</div>
+<canvas id="c"></canvas>
+
+<script>
+const status = document.getElementById("status");
+const canvas = document.getElementById("c");
+
+function fail(msg) {
+  status.textContent = "ERROR: " + msg;
+  console.error(msg);
+}
+
+const gl =
+  canvas.getContext("webgl2", { powerPreference: "high-performance" }) ||
+  canvas.getContext("webgl",  { powerPreference: "high-performance" });
+
+if (!gl) {
+  fail("WebGL context could not be created");
+} else {
+  status.textContent =
+    "WebGL active: " + gl.getParameter(gl.RENDERER);
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = innerWidth * dpr;
+    canvas.height = innerHeight * dpr;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+
+  function render(t) {
+    resize();
+
+    const r = (Math.sin(t * 0.001) + 1) / 2;
+    const g = (Math.cos(t * 0.001) + 1) / 2;
+
+    gl.clearColor(r, g, 0.2, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    requestAnimationFrame(render);
+  }
+
+  requestAnimationFrame(render);
+}
+</script>
+</body>
+</html>

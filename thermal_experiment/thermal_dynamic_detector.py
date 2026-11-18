@@ -1,0 +1,454 @@
+#!/usr/bin/env python3
+"""
+Offline dynamic thermal-warning detector.
+
+Input:
+  rt_tas_controlled_*.csv
+
+Outputs:
+  thermal_dynamic_predictions.csv
+  thermal_dynamic_summary.csv
+  thermal_dynamic_per_run.csv
+
+Standard library only. No workloads are launched and no system settings
+are modified.
+"""
+
+import csv
+import glob
+import math
+import os
+import statistics
+from collections import defaultdict
+
+DATA_GLOB = "rt_tas_controlled_*.csv"
+HORIZONS = (5, 10)
+TEMP_RISE_C = 0.5
+
+# Past-only feature windows and thresholds.
+TREND_WINDOW_S = 4.0
+TRANSITION_WINDOW_S = 5.0
+GPU_TEMP_DELTA_C = 0.15
+CPU_TEMP_SLOPE_C_PER_S = 0.05
+GPU_FREQ_DELTA_MHZ = 25.0
+GPU_ACTIVITY_DELTA = 0.05
+
+
+def number(value, default=None):
+    try:
+        x = float(value)
+        return x if math.isfinite(x) else default
+    except (TypeError, ValueError):
+        return default
+
+
+def state(value):
+    if value is None:
+        return 0
+    return 1 if str(value).strip().upper() in ("ON", "1", "TRUE", "YES") else 0
+
+
+def load_runs():
+    paths = sorted(
+        path for path in glob.glob(DATA_GLOB)
+        if os.path.basename(path) != "rt_tas_controlled_successful_backup.csv"
+    )
+    if not paths:
+        raise SystemExit(
+            "ERROR: No files matched " + DATA_GLOB +
+            "\nRun this script from ~/thermal_experiment."
+        )
+
+    runs = []
+    required = {
+        "elapsed_s", "phase", "cpu_tctl_C", "gpu_edge_C",
+        "gpu_freq_MHz", "gpu_activity_proxy", "cpu_active",
+        "gpu_enabled"
+    }
+
+    for path in paths:
+        rows = []
+        with open(path, newline="") as f:
+            reader = csv.DictReader(f)
+            missing = required - set(reader.fieldnames or [])
+            if missing:
+                print("SKIP", path, "- missing columns:", ", ".join(sorted(missing)))
+                continue
+
+            for raw in reader:
+                t = number(raw.get("elapsed_s"))
+                gpu_t = number(raw.get("gpu_edge_C"))
+                cpu_t = number(raw.get("cpu_tctl_C"))
+                if t is None or gpu_t is None:
+                    continue
+
+                rows.append({
+                    "run": os.path.basename(path),
+                    "t": t,
+                    "phase": (raw.get("phase") or "").strip(),
+                    "gpu_temp": gpu_t,
+                    "cpu_temp": cpu_t,
+                    "gpu_freq": number(raw.get("gpu_freq_MHz")),
+                    "gpu_activity": number(raw.get("gpu_activity_proxy")),
+                    "cpu_active": state(raw.get("cpu_active")),
+                    "gpu_enabled": state(raw.get("gpu_enabled")),
+                })
+
+        rows.sort(key=lambda r: r["t"])
+        if rows:
+            runs.append(rows)
+            print("Loaded", os.path.basename(path), "-", len(rows), "rows")
+
+    if len(runs) < 2:
+        raise SystemExit("ERROR: Need at least two valid CSV runs for held-out testing.")
+
+    return runs
+
+
+def closest_past(rows, index, target_time):
+    """Find the closest row at or before target_time."""
+    for j in range(index - 1, -1, -1):
+        if rows[j]["t"] <= target_time:
+            return rows[j]
+    return None
+
+
+def make_examples(runs):
+    examples = []
+
+    for rows in runs:
+        run_name = rows[0]["run"]
+
+        for i, cur in enumerate(rows):
+            # Find earlier observations using timestamps, not row offsets.
+            old = closest_past(rows, i, cur["t"] - TREND_WINDOW_S)
+            trans_old = closest_past(rows, i, cur["t"] - TRANSITION_WINDOW_S)
+
+            if old is None:
+                continue
+
+            dt = cur["t"] - old["t"]
+            if dt <= 0:
+                continue
+
+            # Temperature/frequency/activity trends are computed from past data.
+            gpu_dt = cur["gpu_temp"] - old["gpu_temp"]
+            cpu_slope = None
+            if cur["cpu_temp"] is not None and old["cpu_temp"] is not None:
+                cpu_slope = (cur["cpu_temp"] - old["cpu_temp"]) / dt
+
+            freq_delta = None
+            if cur["gpu_freq"] is not None and old["gpu_freq"] is not None:
+                freq_delta = cur["gpu_freq"] - old["gpu_freq"]
+
+            activity_delta = None
+            if cur["gpu_activity"] is not None and old["gpu_activity"] is not None:
+                activity_delta = cur["gpu_activity"] - old["gpu_activity"]
+
+            # State/phase changes observed in the recent past.
+            recent_transition = 0
+            if trans_old is not None:
+                recent_rows = [
+                    r for r in rows
+                    if trans_old["t"] < r["t"] <= cur["t"]
+                ]
+                prev = trans_old
+                for r in recent_rows:
+                    if (r["phase"] != prev["phase"] or
+                        r["gpu_enabled"] != prev["gpu_enabled"] or
+                        r["cpu_active"] != prev["cpu_active"]):
+                        recent_transition = 1
+                    prev = r
+
+            # Dynamic features intentionally exclude the current GPU-enabled
+            # state and phase. Those are evaluated separately as baselines.
+            features = {
+                "gpu_temp_rising": int(gpu_dt >= GPU_TEMP_DELTA_C),
+                "gpu_freq_increasing": int(
+                    freq_delta is not None and freq_delta >= GPU_FREQ_DELTA_MHZ
+                ),
+                "gpu_activity_increasing": int(
+                    activity_delta is not None and
+                    activity_delta >= GPU_ACTIVITY_DELTA
+                ),
+                "cpu_temp_rising": int(
+                    cpu_slope is not None and
+                    cpu_slope >= CPU_TEMP_SLOPE_C_PER_S
+                ),
+                "cpu_active": cur["cpu_active"],
+                "recent_transition": recent_transition,
+            }
+
+            for horizon in HORIZONS:
+                future = None
+                for j in range(i + 1, len(rows)):
+                    if rows[j]["t"] >= cur["t"] + horizon:
+                        future = rows[j]
+                        break
+
+                # Require a future sample in the same phase and within 2 seconds
+                # of the target time; avoid labels across phase boundaries.
+                if future is None or future["phase"] != cur["phase"]:
+                    continue
+                if future["t"] > cur["t"] + horizon + 2.0:
+                    continue
+
+                actual = int(future["gpu_temp"] - cur["gpu_temp"] >= TEMP_RISE_C)
+
+                dynamic_score = (
+                    2 * features["gpu_temp_rising"]
+                    + features["gpu_freq_increasing"]
+                    + features["gpu_activity_increasing"]
+                    + features["cpu_temp_rising"]
+                    + features["cpu_active"]
+                    + features["recent_transition"]
+                )
+
+                examples.append({
+                    "run": run_name,
+                    "t": cur["t"],
+                    "phase": cur["phase"],
+                    "horizon": horizon,
+                    "actual": actual,
+                    "gpu_state_score": cur["gpu_enabled"],
+                    "dynamic_score": dynamic_score,
+                    "features": features,
+                    "gpu_temp_delta": gpu_dt,
+                    "cpu_temp_slope": cpu_slope,
+                    "gpu_freq_delta": freq_delta,
+                    "gpu_activity_delta": activity_delta,
+                })
+
+    return examples
+
+
+def confusion(examples, predictions):
+    tp = fp = fn = tn = 0
+    for e, pred in zip(examples, predictions):
+        if pred and e["actual"]:
+            tp += 1
+        elif pred and not e["actual"]:
+            fp += 1
+        elif not pred and e["actual"]:
+            fn += 1
+        else:
+            tn += 1
+
+    precision = tp / (tp + fp) if tp + fp else 0.0
+    recall = tp / (tp + fn) if tp + fn else 0.0
+    f1 = (
+        2 * precision * recall / (precision + recall)
+        if precision + recall else 0.0
+    )
+    return {
+        "N": len(examples), "TP": tp, "FP": fp, "FN": fn, "TN": tn,
+        "precision": precision, "recall": recall, "F1": f1
+    }
+
+
+def choose_threshold(train_examples, score_fn):
+    """Select threshold on training runs only; maximize F1."""
+    if not train_examples:
+        return 0.0
+
+    scores = sorted(set(score_fn(e) for e in train_examples))
+    candidates = [scores[0] - 1] + scores + [scores[-1] + 1]
+    best_threshold = candidates[0]
+    best_key = (-1.0, -1.0)
+
+    for threshold in candidates:
+        preds = [int(score_fn(e) >= threshold) for e in train_examples]
+        m = confusion(train_examples, preds)
+        # Tie-break by precision, then prefer the higher threshold.
+        key = (m["F1"], m["precision"], threshold)
+        if key > best_key:
+            best_key = key
+            best_threshold = threshold
+
+    return best_threshold
+
+
+def phase_training_rates(train_examples):
+    totals = defaultdict(int)
+    positives = defaultdict(int)
+    overall_total = len(train_examples)
+    overall_pos = sum(e["actual"] for e in train_examples)
+    fallback = overall_pos / overall_total if overall_total else 0.0
+
+    for e in train_examples:
+        totals[e["phase"]] += 1
+        positives[e["phase"]] += e["actual"]
+
+    return {
+        phase: positives[phase] / totals[phase]
+        for phase in totals
+    }, fallback
+
+
+def evaluate(examples):
+    all_predictions = []
+    run_summaries = []
+    summary_rows = []
+
+    run_names = sorted(set(e["run"] for e in examples))
+
+    for horizon in HORIZONS:
+        horizon_examples = [e for e in examples if e["horizon"] == horizon]
+        held_out_predictions = defaultdict(dict)
+
+        for held_out in run_names:
+            test = [e for e in horizon_examples if e["run"] == held_out]
+            train = [e for e in horizon_examples if e["run"] != held_out]
+            if not test or not train:
+                continue
+
+            gpu_threshold = choose_threshold(
+                train, lambda e: e["gpu_state_score"]
+            )
+            dynamic_threshold = choose_threshold(
+                train, lambda e: e["dynamic_score"]
+            )
+            phase_rates, phase_fallback = phase_training_rates(train)
+
+            pred_sets = {
+                "gpu_state_only": [
+                    int(e["gpu_state_score"] >= gpu_threshold) for e in test
+                ],
+                "dynamic_detector": [
+                    int(e["dynamic_score"] >= dynamic_threshold) for e in test
+                ],
+                "phase_only": [
+                    int(phase_rates.get(e["phase"], phase_fallback) >= 0.5)
+                    for e in test
+                ],
+            }
+
+            for detector, preds in pred_sets.items():
+                for e, pred in zip(test, preds):
+                    record = {
+                        **e,
+                        "detector": detector,
+                        "prediction": pred,
+                        "held_out_run": held_out,
+                        "threshold": (
+                            gpu_threshold if detector == "gpu_state_only"
+                            else dynamic_threshold if detector == "dynamic_detector"
+                            else 0.5
+                        ),
+                    }
+                    all_predictions.append(record)
+                    held_out_predictions[detector][(e["run"], e["t"], e["phase"])] = (
+                        e["actual"], pred
+                    )
+
+                m = confusion(test, preds)
+                run_summaries.append({
+                    "horizon_s": horizon,
+                    "held_out_run": held_out,
+                    "detector": detector,
+                    **m,
+                    "threshold": (
+                        gpu_threshold if detector == "gpu_state_only"
+                        else dynamic_threshold if detector == "dynamic_detector"
+                        else 0.5
+                    ),
+                })
+
+        for detector in ("gpu_state_only", "dynamic_detector", "phase_only"):
+            records = [
+                r for r in all_predictions
+                if r["horizon"] == horizon and r["detector"] == detector
+            ]
+            m = confusion(records, [r["prediction"] for r in records])
+            summary_rows.append({
+                "horizon_s": horizon,
+                "detector": detector,
+                **m,
+            })
+
+    return all_predictions, summary_rows, run_summaries
+
+
+def write_csv(path, rows, fields):
+    with open(path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def fmt(m):
+    return (
+        f"N={m['N']:4d} TP={m['TP']:4d} FP={m['FP']:4d} "
+        f"FN={m['FN']:4d} TN={m['TN']:4d} "
+        f"P={m['precision']:.3f} R={m['recall']:.3f} F1={m['F1']:.3f}"
+    )
+
+
+def main():
+    runs = load_runs()
+    examples = make_examples(runs)
+
+    if not examples:
+        raise SystemExit("ERROR: No labeled examples created; check CSV timestamps and phases.")
+
+    print("\nLabel definition:")
+    print(f"  GPU edge temperature rises >= {TEMP_RISE_C:.1f} C within 5s or 10s")
+    print("  Future sample must remain in the same phase.")
+    print("  Thresholds are selected using training runs only.\n")
+
+    predictions, summaries, per_run = evaluate(examples)
+
+    print("POOLED LEAVE-ONE-RUN-OUT RESULTS")
+    print("-" * 105)
+    print(f"{'Horizon':<9}{'Detector':<22}Metrics")
+    for r in summaries:
+        print(f"{r['horizon_s']:<9}{r['detector']:<22}{fmt(r)}")
+
+    print("\nPER HELD-OUT RUN")
+    print("-" * 105)
+    for r in per_run:
+        print(
+            f"{r['horizon_s']:>2}s {r['held_out_run']:<42} "
+            f"{r['detector']:<20} F1={r['F1']:.3f} "
+            f"P={r['precision']:.3f} R={r['recall']:.3f}"
+        )
+
+    pred_fields = [
+        "run", "held_out_run", "t", "phase", "horizon", "actual",
+        "detector", "prediction", "threshold", "gpu_state_score",
+        "dynamic_score", "gpu_temp_delta", "cpu_temp_slope",
+        "gpu_freq_delta", "gpu_activity_delta",
+        "gpu_temp_rising", "gpu_freq_increasing",
+        "gpu_activity_increasing", "cpu_temp_rising",
+        "cpu_active", "recent_transition"
+    ]
+    pred_rows = []
+    for r in predictions:
+        row = dict(r)
+        row.update(r["features"])
+        pred_rows.append(row)
+
+    write_csv("thermal_dynamic_predictions.csv", pred_rows, pred_fields)
+    write_csv(
+        "thermal_dynamic_summary.csv",
+        summaries,
+        ["horizon_s", "detector", "N", "TP", "FP", "FN", "TN",
+         "precision", "recall", "F1"]
+    )
+    write_csv(
+        "thermal_dynamic_per_run.csv",
+        per_run,
+        ["horizon_s", "held_out_run", "detector", "N", "TP", "FP",
+         "FN", "TN", "precision", "recall", "F1", "threshold"]
+    )
+
+    print("\nCreated:")
+    print("  thermal_dynamic_predictions.csv")
+    print("  thermal_dynamic_summary.csv")
+    print("  thermal_dynamic_per_run.csv")
+    print("\nInterpretation: compare F1, precision, and recall across all three detectors.")
+    print("A higher score is not proof of causal or reliable early thermal prediction.")
+
+
+if __name__ == "__main__":
+    main()

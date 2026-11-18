@@ -1,0 +1,38 @@
+
+PREDICTIVE RT-TAS DISPATCHER V2
+============================================================
+Mode: CHRONOLOGICAL DISCRETE-EVENT REPLAY
+Tasks: 7
+Thermal decision records: 65
+Task timing unit: seconds
+CPU/GPU queues: Independent non-preemptive EDF
+Maximum decision gap: 2.0 seconds
+Real workload execution: NO
+
+Admission attempts:
+DEFER_INVALID           : 29
+DEFER_THERMAL           : 60
+
+Final task outcomes:
+DEADLINE_MET            : 4
+EXPIRED_WITHOUT_ADMISSION: 2
+PENDING                 : 1
+
+Task summary:
+Task  Resource Start     Finish    Deadline  Status
+T1    CPU      18.0      19.0      30        DEADLINE_MET
+T2    GPU      None      None      50        EXPIRED_WITHOUT_ADMISSION
+T3    CPU      26.0      27.5      60        DEADLINE_MET
+T4    GPU      None      None      55        EXPIRED_WITHOUT_ADMISSION
+T5    CPU      25.0      26.0      50        DEADLINE_MET
+T6    GPU      None      None      70        PENDING
+T7    CPU      28.0      29.2      65        DEADLINE_MET
+
+Pending tasks at end:
+CPU: None
+GPU: ['T6']
+
+Event log: /home/152502018/thermal_experiment/threshold_sweep_v1/task_dispatch_v1/20261111_225315_D_STRICT/20261111_225315_D_STRICT_decisions_predictive_dispatch_v2_events.csv
+Task summary: /home/152502018/thermal_experiment/threshold_sweep_v1/task_dispatch_v1/20261111_225315_D_STRICT/20261111_225315_D_STRICT_decisions_predictive_dispatch_v2_events_task_summary.csv
+
+--- STDERR ---

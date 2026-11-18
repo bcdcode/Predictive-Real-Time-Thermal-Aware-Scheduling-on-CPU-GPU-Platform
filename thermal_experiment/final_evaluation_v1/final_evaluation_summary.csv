@@ -1,0 +1,6 @@
+policy,cpu_limit_C,gpu_limit_C,runs,forecast_records,valid_forecasts,cpu_forecast_admission_percent,gpu_forecast_admission_percent,task_total,tasks_dispatched,deadlines_met,expired_without_admission,pending,deadline_success_percent,dispatch_rate_percent,comparison_note
+EDF_BASELINE,NA,NA,1,0,0,NA,NA,63,63,63,0,0,100.0,100.0,One deterministic EDF schedule normalized across nine runs
+A_RELAXED,70.0,65.0,9,585,423,100.0,100.0,63,63,63,0,0,100.0,100.0,Nine recorded runs; seven synthetic tasks per replay
+B_MODERATE,50.0,40.0,9,585,423,100.0,100.0,63,63,63,0,0,100.0,100.0,Nine recorded runs; seven synthetic tasks per replay
+C_CONSERVATIVE,45.0,35.0,9,585,423,100.0,100.0,63,63,63,0,0,100.0,100.0,Nine recorded runs; seven synthetic tasks per replay
+D_STRICT,40.0,32.0,9,585,423,76.6,17.73,63,45,45,12,6,71.43,71.43,Nine recorded runs; seven synthetic tasks per replay

@@ -1,0 +1,234 @@
+Loading predictive models...
+CPU Model F loaded: 17 features
+GPU Model E loaded: 15 features
+Prediction horizon: 1 second
+Slope window: 5 seconds
+
+Starting live predictive engine
+Input: rt_tas_controlled_20261108_141940.csv
+Output: rt_tas_controlled_20261108_141940_live_predictions.csv
+Mode: SHADOW
+Automatic workload control: DISABLED
+
+Waiting for experiment samples...
+
+[   0s] IDLE_BASELINE1     | WARMUP
+[   1s] IDLE_BASELINE1     | WARMUP
+[   2s] IDLE_BASELINE1     | WARMUP
+[   3s] IDLE_BASELINE1     | WARMUP
+[   4s] IDLE_BASELINE1     | WARMUP
+[   5s] IDLE_BASELINE1     | CPU 37.38 -> 37.47 C | GPU 27.00 -> 28.45 C | GPU busy=1.0
+[   6s] IDLE_BASELINE1     | CPU 37.00 -> 36.75 C | GPU 26.00 -> 26.29 C | GPU busy=1.0
+[   7s] IDLE_BASELINE1     | CPU 36.75 -> 36.45 C | GPU 27.00 -> 26.81 C | GPU busy=2.0
+[   8s] IDLE_BASELINE1     | CPU 36.38 -> 36.30 C | GPU 27.00 -> 27.32 C | GPU busy=2.0
+[   9s] IDLE_BASELINE1     | CPU 36.12 -> 36.05 C | GPU 27.00 -> 27.23 C | GPU busy=1.0
+[  10s] IDLE_BASELINE1     | CPU 35.75 -> 35.71 C | GPU 27.00 -> 27.23 C | GPU busy=1.0
+[  11s] IDLE_BASELINE1     | CPU 35.50 -> 35.40 C | GPU 27.00 -> 26.70 C | GPU busy=1.0
+[  12s] IDLE_BASELINE1     | CPU 35.25 -> 35.27 C | GPU 27.00 -> 27.23 C | GPU busy=1.0
+[  13s] IDLE_BASELINE1     | CPU 35.00 -> 35.06 C | GPU 26.00 -> 26.81 C | GPU busy=1.0
+[  14s] IDLE_BASELINE1     | CPU 34.75 -> 34.84 C | GPU 26.00 -> 26.80 C | GPU busy=1.0
+[  15s] IDLE_BASELINE1     | CPU 34.50 -> 34.38 C | GPU 26.00 -> 26.66 C | GPU busy=6.0
+[  16s] IDLE_BASELINE1     | CPU 34.25 -> 34.30 C | GPU 26.00 -> 26.74 C | GPU busy=3.0
+[  17s] IDLE_BASELINE1     | CPU 34.00 -> 34.11 C | GPU 27.00 -> 27.19 C | GPU busy=2.0
+[  18s] IDLE_BASELINE1     | CPU 33.88 -> 33.89 C | GPU 27.00 -> 26.79 C | GPU busy=2.0
+[  19s] IDLE_BASELINE1     | PHASE_BOUNDARY_SKIPPED
+[  20s] SIMULTANEOUS       | CPU 33.62 -> 38.77 C | GPU 27.00 -> 30.92 C | GPU busy=4.0
+[  21s] SIMULTANEOUS       | CPU 40.00 -> 43.79 C | GPU 32.00 -> 32.97 C | GPU busy=13.0
+[  22s] SIMULTANEOUS       | CPU 44.12 -> 47.24 C | GPU 32.00 -> 33.36 C | GPU busy=18.0
+[  23s] SIMULTANEOUS       | CPU 46.75 -> 49.48 C | GPU 32.00 -> 33.41 C | GPU busy=19.0
+[  24s] SIMULTANEOUS       | CPU 48.62 -> 51.15 C | GPU 33.00 -> 33.84 C | GPU busy=18.0
+[  25s] SIMULTANEOUS       | CPU 49.62 -> 49.33 C | GPU 32.00 -> 31.40 C | GPU busy=16.0
+[  26s] SIMULTANEOUS       | CPU 50.38 -> 50.60 C | GPU 33.00 -> 33.62 C | GPU busy=16.0
+[  27s] SIMULTANEOUS       | CPU 50.88 -> 51.04 C | GPU 33.00 -> 33.62 C | GPU busy=17.0
+[  28s] SIMULTANEOUS       | CPU 51.12 -> 51.39 C | GPU 33.00 -> 33.63 C | GPU busy=15.0
+[  29s] SIMULTANEOUS       | CPU 51.38 -> 51.79 C | GPU 33.00 -> 34.03 C | GPU busy=14.0
+[  30s] SIMULTANEOUS       | CPU 51.62 -> 51.80 C | GPU 34.00 -> 33.98 C | GPU busy=16.0
+[  31s] SIMULTANEOUS       | CPU 51.75 -> 52.11 C | GPU 33.00 -> 33.86 C | GPU busy=15.0
+[  32s] SIMULTANEOUS       | CPU 51.88 -> 52.21 C | GPU 33.00 -> 33.96 C | GPU busy=15.0
+[  33s] SIMULTANEOUS       | CPU 52.00 -> 52.31 C | GPU 34.00 -> 34.39 C | GPU busy=15.0
+[  34s] SIMULTANEOUS       | CPU 52.12 -> 52.37 C | GPU 34.00 -> 34.35 C | GPU busy=16.0
+[  35s] SIMULTANEOUS       | CPU 52.25 -> 52.64 C | GPU 34.00 -> 34.78 C | GPU busy=15.0
+[  36s] SIMULTANEOUS       | CPU 52.38 -> 52.65 C | GPU 34.00 -> 34.29 C | GPU busy=15.0
+[  37s] SIMULTANEOUS       | CPU 52.38 -> 52.65 C | GPU 34.00 -> 34.38 C | GPU busy=15.0
+[  38s] SIMULTANEOUS       | CPU 52.50 -> 52.86 C | GPU 34.00 -> 34.78 C | GPU busy=15.0
+[  39s] SIMULTANEOUS       | CPU 52.62 -> 53.02 C | GPU 34.00 -> 34.81 C | GPU busy=14.0
+[  40s] SIMULTANEOUS       | CPU 52.62 -> 52.97 C | GPU 34.00 -> 34.78 C | GPU busy=15.0
+[  41s] SIMULTANEOUS       | CPU 52.75 -> 53.10 C | GPU 34.00 -> 34.66 C | GPU busy=15.0
+[  42s] SIMULTANEOUS       | CPU 52.75 -> 53.11 C | GPU 35.00 -> 35.24 C | GPU busy=14.0
+[  43s] SIMULTANEOUS       | CPU 52.88 -> 53.22 C | GPU 35.00 -> 35.24 C | GPU busy=14.0
+[  44s] SIMULTANEOUS       | CPU 52.88 -> 53.25 C | GPU 34.00 -> 34.81 C | GPU busy=14.0
+[  45s] SIMULTANEOUS       | CPU 52.88 -> 53.23 C | GPU 35.00 -> 35.23 C | GPU busy=14.0
+[  46s] SIMULTANEOUS       | CPU 53.00 -> 53.37 C | GPU 34.00 -> 34.69 C | GPU busy=14.0
+[  47s] SIMULTANEOUS       | CPU 53.00 -> 53.44 C | GPU 35.00 -> 35.64 C | GPU busy=14.0
+[  48s] SIMULTANEOUS       | CPU 53.12 -> 53.57 C | GPU 34.00 -> 35.22 C | GPU busy=14.0
+[  49s] SIMULTANEOUS       | CPU 53.12 -> 53.45 C | GPU 35.00 -> 35.24 C | GPU busy=14.0
+[  50s] SIMULTANEOUS       | CPU 53.25 -> 53.66 C | GPU 35.00 -> 35.64 C | GPU busy=14.0
+[  51s] SIMULTANEOUS       | CPU 53.25 -> 53.57 C | GPU 35.00 -> 35.11 C | GPU busy=14.0
+[  52s] SIMULTANEOUS       | CPU 53.25 -> 53.66 C | GPU 35.00 -> 35.64 C | GPU busy=14.0
+[  53s] SIMULTANEOUS       | CPU 53.38 -> 53.68 C | GPU 35.00 -> 35.15 C | GPU busy=14.0
+[  54s] SIMULTANEOUS       | CPU 53.38 -> 53.78 C | GPU 35.00 -> 35.64 C | GPU busy=14.0
+[  55s] SIMULTANEOUS       | CPU 53.50 -> 53.85 C | GPU 35.00 -> 35.48 C | GPU busy=15.0
+[  56s] SIMULTANEOUS       | CPU 53.50 -> 53.89 C | GPU 35.00 -> 35.64 C | GPU busy=14.0
+[  57s] SIMULTANEOUS       | CPU 53.62 -> 53.95 C | GPU 35.00 -> 35.62 C | GPU busy=15.0
+[  58s] SIMULTANEOUS       | CPU 53.75 -> 54.06 C | GPU 35.00 -> 35.62 C | GPU busy=15.0
+[  59s] SIMULTANEOUS       | CPU 53.75 -> 54.06 C | GPU 35.00 -> 35.62 C | GPU busy=15.0
+[  60s] SIMULTANEOUS       | CPU 53.75 -> 54.11 C | GPU 35.00 -> 35.58 C | GPU busy=14.0
+[  61s] SIMULTANEOUS       | CPU 53.88 -> 54.22 C | GPU 35.00 -> 35.65 C | GPU busy=14.0
+[  62s] SIMULTANEOUS       | CPU 53.88 -> 54.17 C | GPU 35.00 -> 35.62 C | GPU busy=15.0
+[  63s] SIMULTANEOUS       | CPU 53.88 -> 54.17 C | GPU 35.00 -> 35.61 C | GPU busy=15.0
+[  64s] SIMULTANEOUS       | CPU 54.00 -> 54.28 C | GPU 35.00 -> 35.62 C | GPU busy=15.0
+[  65s] SIMULTANEOUS       | CPU 54.00 -> 54.26 C | GPU 36.00 -> 36.04 C | GPU busy=15.0
+[  66s] SIMULTANEOUS       | CPU 54.12 -> 54.37 C | GPU 36.00 -> 36.04 C | GPU busy=15.0
+[  67s] SIMULTANEOUS       | CPU 54.12 -> 54.39 C | GPU 35.00 -> 35.62 C | GPU busy=15.0
+[  68s] SIMULTANEOUS       | CPU 54.25 -> 54.54 C | GPU 36.00 -> 35.97 C | GPU busy=14.0
+[  69s] SIMULTANEOUS       | CPU 54.25 -> 54.55 C | GPU 35.00 -> 35.65 C | GPU busy=14.0
+[  70s] SIMULTANEOUS       | CPU 54.25 -> 54.65 C | GPU 36.00 -> 36.34 C | GPU busy=14.0
+[  71s] SIMULTANEOUS       | CPU 54.38 -> 54.75 C | GPU 36.00 -> 36.47 C | GPU busy=14.0
+[  72s] SIMULTANEOUS       | CPU 54.38 -> 54.66 C | GPU 35.00 -> 35.65 C | GPU busy=14.0
+[  73s] SIMULTANEOUS       | CPU 54.38 -> 54.77 C | GPU 35.00 -> 36.05 C | GPU busy=14.0
+[  74s] SIMULTANEOUS       | CPU 54.38 -> 54.64 C | GPU 36.00 -> 36.07 C | GPU busy=14.0
+[  75s] SIMULTANEOUS       | CPU 54.50 -> 54.89 C | GPU 35.00 -> 35.92 C | GPU busy=14.0
+[  76s] SIMULTANEOUS       | CPU 54.50 -> 54.86 C | GPU 36.00 -> 36.47 C | GPU busy=14.0
+[  77s] SIMULTANEOUS       | CPU 54.50 -> 54.77 C | GPU 35.00 -> 35.65 C | GPU busy=14.0
+[  78s] SIMULTANEOUS       | CPU 54.50 -> 54.75 C | GPU 36.00 -> 36.07 C | GPU busy=14.0
+[  79s] SIMULTANEOUS       | PHASE_BOUNDARY_SKIPPED
+[  80s] COOLDOWN1          | CPU 54.62 -> 53.20 C | GPU 36.00 -> 31.74 C | GPU busy=14.0
+[  81s] COOLDOWN1          | CPU 53.88 -> 53.00 C | GPU 30.00 -> 29.86 C | GPU busy=9.0
+[  82s] COOLDOWN1          | CPU 53.12 -> 52.48 C | GPU 30.00 -> 29.58 C | GPU busy=4.0
+[  83s] COOLDOWN1          | CPU 52.38 -> 52.03 C | GPU 30.00 -> 30.02 C | GPU busy=2.0
+[  84s] COOLDOWN1          | CPU 51.62 -> 51.42 C | GPU 30.00 -> 30.02 C | GPU busy=1.0
+[  85s] COOLDOWN1          | CPU 50.88 -> 50.04 C | GPU 30.00 -> 32.21 C | GPU busy=1.0
+[  86s] COOLDOWN1          | CPU 50.25 -> 48.85 C | GPU 30.00 -> 29.80 C | GPU busy=1.0
+[  87s] COOLDOWN1          | CPU 49.50 -> 48.19 C | GPU 30.00 -> 29.79 C | GPU busy=1.0
+[  88s] COOLDOWN1          | CPU 48.88 -> 47.65 C | GPU 29.00 -> 29.36 C | GPU busy=1.0
+[  89s] COOLDOWN1          | CPU 48.25 -> 47.10 C | GPU 29.00 -> 29.36 C | GPU busy=1.0
+[  90s] COOLDOWN1          | CPU 47.62 -> 46.54 C | GPU 29.00 -> 29.36 C | GPU busy=1.0
+[  91s] COOLDOWN1          | CPU 47.12 -> 46.10 C | GPU 29.00 -> 29.35 C | GPU busy=1.0
+[  92s] COOLDOWN1          | CPU 46.50 -> 45.54 C | GPU 29.00 -> 29.35 C | GPU busy=1.0
+[  93s] COOLDOWN1          | CPU 45.88 -> 44.93 C | GPU 29.00 -> 28.97 C | GPU busy=0.0
+[  94s] COOLDOWN1          | CPU 45.38 -> 44.48 C | GPU 29.00 -> 28.97 C | GPU busy=0.0
+[  95s] COOLDOWN1          | CPU 44.88 -> 44.04 C | GPU 29.00 -> 28.97 C | GPU busy=0.0
+[  96s] COOLDOWN1          | CPU 44.38 -> 43.60 C | GPU 29.00 -> 28.96 C | GPU busy=0.0
+[  97s] COOLDOWN1          | CPU 43.88 -> 43.15 C | GPU 29.00 -> 28.96 C | GPU busy=0.0
+[  98s] COOLDOWN1          | CPU 43.38 -> 42.71 C | GPU 29.00 -> 28.96 C | GPU busy=0.0
+[  99s] COOLDOWN1          | CPU 42.88 -> 42.28 C | GPU 28.00 -> 28.53 C | GPU busy=0.0
+[ 100s] COOLDOWN1          | CPU 42.50 -> 41.95 C | GPU 28.00 -> 28.53 C | GPU busy=0.0
+[ 101s] COOLDOWN1          | CPU 42.00 -> 41.50 C | GPU 28.00 -> 28.53 C | GPU busy=0.0
+[ 102s] COOLDOWN1          | CPU 41.62 -> 41.17 C | GPU 28.00 -> 28.53 C | GPU busy=0.0
+[ 103s] COOLDOWN1          | CPU 41.25 -> 40.84 C | GPU 28.00 -> 28.53 C | GPU busy=0.0
+[ 104s] COOLDOWN1          | CPU 40.75 -> 40.29 C | GPU 28.00 -> 28.12 C | GPU busy=0.0
+[ 105s] COOLDOWN1          | CPU 40.38 -> 39.96 C | GPU 28.00 -> 28.12 C | GPU busy=0.0
+[ 106s] COOLDOWN1          | CPU 40.00 -> 39.62 C | GPU 28.00 -> 28.12 C | GPU busy=0.0
+[ 107s] COOLDOWN1          | CPU 39.62 -> 39.25 C | GPU 28.00 -> 27.95 C | GPU busy=1.0
+[ 108s] COOLDOWN1          | CPU 39.38 -> 39.05 C | GPU 29.00 -> 28.54 C | GPU busy=0.0
+[ 109s] COOLDOWN1          | PHASE_BOUNDARY_SKIPPED
+[ 110s] IDLE_BASELINE2     | CPU 38.62 -> 38.31 C | GPU 28.00 -> 28.25 C | GPU busy=0.0
+[ 111s] IDLE_BASELINE2     | CPU 38.38 -> 38.03 C | GPU 28.00 -> 28.22 C | GPU busy=1.0
+[ 112s] IDLE_BASELINE2     | CPU 38.00 -> 37.70 C | GPU 28.00 -> 28.21 C | GPU busy=1.0
+[ 113s] IDLE_BASELINE2     | CPU 37.75 -> 37.59 C | GPU 28.00 -> 28.61 C | GPU busy=1.0
+[ 114s] IDLE_BASELINE2     | CPU 37.38 -> 37.23 C | GPU 28.00 -> 28.32 C | GPU busy=1.0
+[ 115s] IDLE_BASELINE2     | CPU 37.12 -> 37.02 C | GPU 28.00 -> 28.07 C | GPU busy=1.0
+[ 116s] IDLE_BASELINE2     | CPU 36.88 -> 36.88 C | GPU 28.00 -> 28.18 C | GPU busy=1.0
+[ 117s] IDLE_BASELINE2     | CPU 36.62 -> 36.57 C | GPU 28.00 -> 28.07 C | GPU busy=1.0
+[ 118s] IDLE_BASELINE2     | CPU 36.38 -> 36.35 C | GPU 28.00 -> 28.07 C | GPU busy=1.0
+[ 119s] IDLE_BASELINE2     | CPU 36.12 -> 36.15 C | GPU 27.00 -> 27.64 C | GPU busy=1.0
+[ 120s] IDLE_BASELINE2     | CPU 35.88 -> 35.92 C | GPU 27.00 -> 27.64 C | GPU busy=1.0
+[ 121s] IDLE_BASELINE2     | CPU 35.62 -> 35.70 C | GPU 27.00 -> 27.64 C | GPU busy=1.0
+[ 122s] IDLE_BASELINE2     | CPU 35.38 -> 35.53 C | GPU 27.00 -> 27.67 C | GPU busy=0.0
+[ 123s] IDLE_BASELINE2     | CPU 35.12 -> 35.29 C | GPU 28.00 -> 28.09 C | GPU busy=0.0
+[ 124s] IDLE_BASELINE2     | CPU 35.00 -> 35.03 C | GPU 28.00 -> 27.53 C | GPU busy=1.0
+[ 125s] IDLE_BASELINE2     | CPU 34.75 -> 34.80 C | GPU 28.00 -> 27.65 C | GPU busy=1.0
+[ 126s] IDLE_BASELINE2     | CPU 34.50 -> 34.58 C | GPU 28.00 -> 27.65 C | GPU busy=1.0
+[ 127s] IDLE_BASELINE2     | CPU 34.38 -> 34.49 C | GPU 27.00 -> 27.23 C | GPU busy=1.0
+[ 128s] IDLE_BASELINE2     | CPU 34.12 -> 34.37 C | GPU 27.00 -> 27.63 C | GPU busy=1.0
+[ 129s] IDLE_BASELINE2     | PHASE_BOUNDARY_SKIPPED
+[ 130s] TA_CPU             | CPU 33.75 -> 37.00 C | GPU 27.00 -> 30.51 C | GPU busy=1.0
+[ 131s] TA_CPU             | CPU 40.38 -> 42.67 C | GPU 32.00 -> 32.83 C | GPU busy=1.0
+[ 132s] TA_CPU             | CPU 44.75 -> 46.36 C | GPU 33.00 -> 32.99 C | GPU busy=1.0
+[ 133s] TA_CPU             | CPU 47.50 -> 48.75 C | GPU 33.00 -> 33.07 C | GPU busy=1.0
+[ 134s] TA_CPU             | PHASE_BOUNDARY_SKIPPED
+[ 135s] TA_GPU             | CPU 50.25 -> 49.32 C | GPU 33.00 -> 29.40 C | GPU busy=1.0
+[ 136s] TA_GPU             | CPU 49.62 -> 49.04 C | GPU 29.00 -> 29.29 C | GPU busy=10.0
+[ 137s] TA_GPU             | CPU 48.88 -> 48.27 C | GPU 29.00 -> 29.40 C | GPU busy=16.0
+[ 138s] TA_GPU             | CPU 48.25 -> 47.67 C | GPU 29.00 -> 29.26 C | GPU busy=18.0
+[ 139s] TA_GPU             | PHASE_BOUNDARY_SKIPPED
+[ 140s] TA_CPU             | CPU 47.00 -> 48.40 C | GPU 29.00 -> 32.91 C | GPU busy=19.0
+[ 141s] TA_CPU             | CPU 48.62 -> 49.79 C | GPU 33.00 -> 33.35 C | GPU busy=9.0
+[ 142s] TA_CPU             | CPU 49.88 -> 51.11 C | GPU 33.00 -> 33.55 C | GPU busy=4.0
+[ 143s] TA_CPU             | CPU 50.75 -> 52.01 C | GPU 33.00 -> 33.68 C | GPU busy=1.0
+[ 144s] TA_CPU             | PHASE_BOUNDARY_SKIPPED
+[ 145s] TA_GPU             | CPU 51.62 -> 50.97 C | GPU 33.00 -> 29.99 C | GPU busy=0.0
+[ 146s] TA_GPU             | CPU 51.00 -> 50.57 C | GPU 29.00 -> 29.62 C | GPU busy=8.0
+[ 147s] TA_GPU             | CPU 50.25 -> 49.72 C | GPU 30.00 -> 29.87 C | GPU busy=12.0
+[ 148s] TA_GPU             | CPU 49.50 -> 49.05 C | GPU 29.00 -> 29.38 C | GPU busy=13.0
+[ 149s] TA_GPU             | PHASE_BOUNDARY_SKIPPED
+[ 150s] TA_CPU             | CPU 48.25 -> 49.76 C | GPU 29.00 -> 32.93 C | GPU busy=14.0
+[ 151s] TA_CPU             | CPU 49.50 -> 50.72 C | GPU 33.00 -> 33.43 C | GPU busy=6.0
+[ 152s] TA_CPU             | CPU 50.50 -> 51.88 C | GPU 33.00 -> 34.00 C | GPU busy=2.0
+[ 153s] TA_CPU             | CPU 51.25 -> 52.46 C | GPU 33.00 -> 33.67 C | GPU busy=1.0
+[ 154s] TA_CPU             | PHASE_BOUNDARY_SKIPPED
+[ 155s] TA_GPU             | CPU 52.00 -> 51.26 C | GPU 34.00 -> 30.24 C | GPU busy=1.0
+[ 156s] TA_GPU             | CPU 51.25 -> 50.73 C | GPU 30.00 -> 30.00 C | GPU busy=9.0
+[ 157s] TA_GPU             | CPU 50.50 -> 49.82 C | GPU 29.00 -> 29.36 C | GPU busy=15.0
+[ 158s] TA_GPU             | CPU 49.88 -> 49.14 C | GPU 29.00 -> 29.23 C | GPU busy=18.0
+[ 159s] TA_GPU             | PHASE_BOUNDARY_SKIPPED
+[ 160s] TA_CPU             | CPU 48.50 -> 49.82 C | GPU 30.00 -> 33.74 C | GPU busy=19.0
+[ 161s] TA_CPU             | CPU 49.75 -> 50.80 C | GPU 33.00 -> 33.69 C | GPU busy=11.0
+[ 162s] TA_CPU             | CPU 50.75 -> 51.83 C | GPU 34.00 -> 33.94 C | GPU busy=5.0
+[ 163s] TA_CPU             | CPU 51.38 -> 52.51 C | GPU 34.00 -> 34.06 C | GPU busy=2.0
+[ 164s] TA_CPU             | PHASE_BOUNDARY_SKIPPED
+[ 165s] TA_GPU             | CPU 52.12 -> 51.47 C | GPU 34.00 -> 30.77 C | GPU busy=1.0
+[ 166s] TA_GPU             | CPU 51.38 -> 50.79 C | GPU 30.00 -> 29.97 C | GPU busy=10.0
+[ 167s] TA_GPU             | CPU 50.75 -> 50.09 C | GPU 30.00 -> 30.03 C | GPU busy=16.0
+[ 168s] TA_GPU             | CPU 50.00 -> 49.35 C | GPU 30.00 -> 29.93 C | GPU busy=18.0
+[ 169s] TA_GPU             | PHASE_BOUNDARY_SKIPPED
+[ 170s] TA_CPU             | CPU 48.62 -> 49.95 C | GPU 29.00 -> 33.32 C | GPU busy=19.0
+[ 171s] TA_CPU             | CPU 49.88 -> 50.96 C | GPU 33.00 -> 33.72 C | GPU busy=10.0
+[ 172s] TA_CPU             | CPU 50.88 -> 52.11 C | GPU 33.00 -> 33.94 C | GPU busy=4.0
+[ 173s] TA_CPU             | CPU 51.50 -> 52.72 C | GPU 34.00 -> 34.46 C | GPU busy=2.0
+[ 174s] TA_CPU             | PHASE_BOUNDARY_SKIPPED
+[ 175s] TA_GPU             | CPU 52.25 -> 51.47 C | GPU 34.00 -> 30.37 C | GPU busy=1.0
+[ 176s] TA_GPU             | CPU 51.50 -> 50.86 C | GPU 30.00 -> 29.94 C | GPU busy=11.0
+[ 177s] TA_GPU             | CPU 50.75 -> 49.97 C | GPU 30.00 -> 29.75 C | GPU busy=16.0
+[ 178s] TA_GPU             | CPU 50.12 -> 49.45 C | GPU 30.00 -> 30.06 C | GPU busy=18.0
+[ 179s] TA_GPU             | PHASE_BOUNDARY_SKIPPED
+[ 180s] TA_CPU             | CPU 48.88 -> 50.13 C | GPU 31.00 -> 34.17 C | GPU busy=19.0
+[ 181s] TA_CPU             | CPU 50.00 -> 51.15 C | GPU 34.00 -> 34.20 C | GPU busy=8.0
+[ 182s] TA_CPU             | CPU 51.00 -> 52.25 C | GPU 34.00 -> 34.40 C | GPU busy=3.0
+[ 183s] TA_CPU             | CPU 51.62 -> 52.83 C | GPU 34.00 -> 34.46 C | GPU busy=2.0
+[ 184s] TA_CPU             | PHASE_BOUNDARY_SKIPPED
+[ 185s] TA_GPU             | CPU 52.38 -> 51.80 C | GPU 34.00 -> 31.17 C | GPU busy=1.0
+[ 186s] TA_GPU             | CPU 51.62 -> 50.99 C | GPU 30.00 -> 30.16 C | GPU busy=13.0
+[ 187s] TA_GPU             | CPU 50.88 -> 50.15 C | GPU 30.00 -> 29.99 C | GPU busy=17.0
+[ 188s] TA_GPU             | CPU 50.25 -> 49.56 C | GPU 30.00 -> 30.06 C | GPU busy=18.0
+[ 189s] TA_GPU             | PHASE_BOUNDARY_SKIPPED
+[ 190s] COOLDOWN2          | CPU 48.88 -> 47.85 C | GPU 29.00 -> 29.91 C | GPU busy=19.0
+[ 191s] COOLDOWN2          | CPU 48.25 -> 47.21 C | GPU 29.00 -> 28.51 C | GPU busy=12.0
+[ 192s] COOLDOWN2          | CPU 47.62 -> 46.99 C | GPU 29.00 -> 28.71 C | GPU busy=5.0
+[ 193s] COOLDOWN2          | CPU 47.00 -> 46.59 C | GPU 29.00 -> 28.80 C | GPU busy=2.0
+[ 194s] COOLDOWN2          | CPU 46.38 -> 46.08 C | GPU 29.00 -> 28.82 C | GPU busy=1.0
+[ 195s] COOLDOWN2          | CPU 45.88 -> 44.90 C | GPU 28.00 -> 28.52 C | GPU busy=1.0
+[ 196s] COOLDOWN2          | CPU 45.25 -> 44.35 C | GPU 28.00 -> 28.52 C | GPU busy=1.0
+[ 197s] COOLDOWN2          | CPU 44.75 -> 43.88 C | GPU 29.00 -> 28.94 C | GPU busy=1.0
+[ 198s] COOLDOWN2          | CPU 44.25 -> 43.46 C | GPU 28.00 -> 28.51 C | GPU busy=1.0
+[ 199s] COOLDOWN2          | CPU 43.75 -> 43.01 C | GPU 28.00 -> 28.51 C | GPU busy=1.0
+[ 200s] COOLDOWN2          | CPU 43.25 -> 42.46 C | GPU 28.00 -> 28.10 C | GPU busy=1.0
+[ 201s] COOLDOWN2          | CPU 42.75 -> 42.00 C | GPU 29.00 -> 28.52 C | GPU busy=1.0
+[ 202s] COOLDOWN2          | CPU 42.25 -> 41.73 C | GPU 28.00 -> 28.53 C | GPU busy=0.0
+[ 203s] COOLDOWN2          | CPU 41.88 -> 41.29 C | GPU 28.00 -> 28.12 C | GPU busy=0.0
+[ 204s] COOLDOWN2          | CPU 41.38 -> 40.85 C | GPU 28.00 -> 28.12 C | GPU busy=0.0
+[ 205s] COOLDOWN2          | CPU 41.00 -> 40.51 C | GPU 28.00 -> 28.12 C | GPU busy=0.0
+[ 206s] COOLDOWN2          | CPU 40.62 -> 40.28 C | GPU 28.00 -> 28.52 C | GPU busy=0.0
+[ 207s] COOLDOWN2          | CPU 40.12 -> 39.73 C | GPU 28.00 -> 28.11 C | GPU busy=0.0
+[ 208s] COOLDOWN2          | CPU 39.75 -> 39.40 C | GPU 28.00 -> 28.11 C | GPU busy=0.0
+[ 209s] COOLDOWN2          | CPU 39.38 -> 39.07 C | GPU 28.00 -> 28.11 C | GPU busy=0.0
+[ 210s] COOLDOWN2          | CPU 39.12 -> 38.84 C | GPU 28.00 -> 28.11 C | GPU busy=0.0
+[ 211s] COOLDOWN2          | CPU 38.75 -> 38.51 C | GPU 28.00 -> 28.11 C | GPU busy=0.0
+[ 212s] COOLDOWN2          | CPU 38.38 -> 38.18 C | GPU 28.00 -> 28.11 C | GPU busy=0.0
+[ 213s] COOLDOWN2          | CPU 38.12 -> 37.95 C | GPU 28.00 -> 28.11 C | GPU busy=0.0
+[ 214s] COOLDOWN2          | CPU 37.75 -> 37.64 C | GPU 27.00 -> 27.68 C | GPU busy=0.0
+[ 215s] COOLDOWN2          | CPU 37.50 -> 37.40 C | GPU 28.00 -> 28.10 C | GPU busy=0.0
+[ 216s] COOLDOWN2          | CPU 37.12 -> 37.09 C | GPU 27.00 -> 27.67 C | GPU busy=0.0
+[ 217s] COOLDOWN2          | CPU 36.88 -> 36.86 C | GPU 27.00 -> 27.67 C | GPU busy=0.0
+[ 218s] COOLDOWN2          | CPU 36.62 -> 36.64 C | GPU 27.00 -> 27.67 C | GPU busy=0.0
+[ 219s] COOLDOWN2          | PHASE_BOUNDARY_SKIPPED

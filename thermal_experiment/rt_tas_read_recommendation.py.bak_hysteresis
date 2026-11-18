@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+import csv
+import glob
+import os
+import sys
+from datetime import datetime
+
+MAX_AGE_SECONDS = 5
+
+files = sorted(
+    glob.glob("thermal_predictor_shadow_*.csv"),
+    key=os.path.getmtime,
+    reverse=True,
+)
+
+if not files:
+    print("STATUS=NO_LOG")
+    sys.exit(0)
+
+path = files[0]
+
+try:
+    with open(path, newline="") as f:
+        rows = list(csv.DictReader(f))
+
+    if not rows:
+        print("STATUS=EMPTY_LOG")
+        sys.exit(0)
+
+    row = rows[-1]
+    sample_time = datetime.fromisoformat(row["timestamp"]).astimezone()
+    now = datetime.now().astimezone()
+    age = (now - sample_time).total_seconds()
+
+    print(f"FILE={path}")
+    print(f"SAMPLE_TIMESTAMP={row['timestamp']}")
+    print(f"AGE_SECONDS={age:.1f}")
+
+    if age < -2:
+        print("STATUS=CLOCK_MISMATCH")
+        sys.exit(0)
+
+    if age > MAX_AGE_SECONDS:
+        print("STATUS=STALE")
+        sys.exit(0)
+
+    score = int(row["dynamic_score"])
+    level = row["prediction_level"]
+
+    print("STATUS=FRESH")
+    print(f"SCORE={score}")
+    print(f"LEVEL={level}")
+    print(f"PHASE={row['phase']}")
+
+    if score >= 3:
+        print("RECOMMENDATION=SHADOW_REVIEW")
+    else:
+        print("RECOMMENDATION=KEEP_TWFD")
+
+except (OSError, ValueError, KeyError, csv.Error) as e:
+    print("STATUS=READ_ERROR")
+    print(str(e))
+    sys.exit(1)

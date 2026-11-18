@@ -1,0 +1,72 @@
+#define _GNU_SOURCE
+
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <sched.h>
+#include <unistd.h>
+#include <time.h>
+#include <math.h>
+
+static volatile double sink = 0.0;
+
+int main(int argc, char **argv)
+{
+    if (argc != 3) {
+        fprintf(stderr, "Usage: %s <cpu> <seconds>\n", argv[0]);
+        return 1;
+    }
+
+    int cpu = atoi(argv[1]);
+    int seconds = atoi(argv[2]);
+
+    cpu_set_t set;
+    CPU_ZERO(&set);
+    CPU_SET(cpu, &set);
+
+    if (sched_setaffinity(0, sizeof(set), &set) != 0) {
+        perror("sched_setaffinity");
+        return 1;
+    }
+
+    struct timespec start, now;
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
+    uint64_t iterations = 0;
+
+    while (1) {
+        /*
+         * Floating-point workload.
+         * Large enough to keep the selected CPU busy,
+         * but deterministic enough for comparison between cores.
+         */
+        double x = 1.001;
+        double y = 0.999;
+
+        for (int i = 0; i < 1000000; i++) {
+            x = x * 1.0000001 + y;
+            y = y * 0.9999999 + x;
+            x = sqrt(x * x + 1.0);
+            y = sqrt(y * y + 1.0);
+
+            sink += x * y;
+        }
+
+        iterations++;
+
+        clock_gettime(CLOCK_MONOTONIC, &now);
+
+        double elapsed =
+            (now.tv_sec - start.tv_sec) +
+            (now.tv_nsec - start.tv_nsec) / 1e9;
+
+        if (elapsed >= seconds)
+            break;
+    }
+
+    fprintf(stderr,
+            "CPU %d: %.1f seconds, %lu workload iterations, sink=%f\n",
+            cpu, (double)seconds, iterations, sink);
+
+    return 0;
+}

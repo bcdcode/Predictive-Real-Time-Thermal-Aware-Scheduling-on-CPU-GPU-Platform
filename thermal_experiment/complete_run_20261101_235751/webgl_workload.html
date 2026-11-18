@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>Controlled WebGL Workload</title>
+
+<style>
+body {
+    background: #101820;
+    color: white;
+    font-family: Arial;
+    text-align: center;
+}
+
+canvas {
+    width: 90%;
+    max-width: 960px;
+    border: 2px solid white;
+}
+
+#status {
+    font-size: 24px;
+    color: lightgreen;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>GPU WebGL Thermal Workload</h1>
+
+<div id="status">INITIALIZING</div>
+
+<p id="renderer"></p>
+
+<canvas id="glcanvas" width="960" height="540"></canvas>
+
+<script>
+
+const canvas = document.getElementById("glcanvas");
+const status = document.getElementById("status");
+const rendererText = document.getElementById("renderer");
+
+const gl =
+    canvas.getContext("webgl2", {
+        powerPreference: "high-performance",
+        antialias: false
+    }) ||
+    canvas.getContext("webgl", {
+        powerPreference: "high-performance",
+        antialias: false
+    });
+
+if (!gl) {
+
+    status.innerText = "WEBGL NOT AVAILABLE";
+
+} else {
+
+    rendererText.innerText =
+        "Renderer: " + gl.getParameter(gl.RENDERER);
+
+    const webgl2 =
+        typeof WebGL2RenderingContext !== "undefined" &&
+        gl instanceof WebGL2RenderingContext;
+
+    const vertexSource = webgl2 ? `#version 300 es
+        in vec2 position;
+        out vec2 uv;
+
+        void main() {
+            uv = position * 0.5 + 0.5;
+            gl_Position = vec4(position, 0.0, 1.0);
+        }`
+        :
+        `attribute vec2 position;
+         varying vec2 uv;
+
+         void main() {
+             uv = position * 0.5 + 0.5;
+             gl_Position = vec4(position, 0.0, 1.0);
+         }`;
+
+    const fragmentSource = webgl2 ? `#version 300 es
+        precision highp float;
+
+        in vec2 uv;
+        out vec4 outColor;
+        uniform float t;
+
+        void main() {
+
+            vec2 p = (uv - 0.5) * 2.4;
+            float v = 0.0;
+
+            for (int i = 0; i < 90; i++) {
+
+                float fi = float(i);
+
+                p = vec2(
+                    p.x*p.x - p.y*p.y,
+                    2.0*p.x*p.y
+                ) + vec2(
+                    0.21*sin(t*0.7 + fi*0.03),
+                    0.17*cos(t*0.5 + fi*0.02)
+                );
+
+                v += 0.0007 /
+                     (0.015 + abs(length(p)-0.7));
+
+                p = mod(p+2.0,4.0)-2.0;
+            }
+
+            outColor = vec4(
+                0.15 + 0.75*abs(sin(v+t*0.2)),
+                0.12 + 0.65*abs(cos(v*0.7)),
+                0.25 + 0.7*abs(sin(v*0.4)),
+                1.0
+            );
+        }`
+        :
+        `precision highp float;
+
+         varying vec2 uv;
+         uniform float t;
+
+         void main() {
+
+             vec2 p = (uv - 0.5) * 2.4;
+             float v = 0.0;
+
+             for (int i = 0; i < 90; i++) {
+
+                 float fi = float(i);
+
+                 p = vec2(
+                     p.x*p.x - p.y*p.y,
+                     2.0*p.x*p.y
+                 ) + vec2(
+                     0.21*sin(t*0.7 + fi*0.03),
+                     0.17*cos(t*0.5 + fi*0.02)
+                 );
+
+                 v += 0.0007 /
+                      (0.015 + abs(length(p)-0.7));
+
+                 p = mod(p+2.0,4.0)-2.0;
+             }
+
+             gl_FragColor = vec4(
+                 0.15 + 0.75*abs(sin(v+t*0.2)),
+                 0.12 + 0.65*abs(cos(v*0.7)),
+                 0.25 + 0.7*abs(sin(v*0.4)),
+                 1.0
+             );
+         }`;
+
+    function compile(type, source) {
+
+        const shader = gl.createShader(type);
+
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            throw new Error(gl.getShaderInfoLog(shader));
+        }
+
+        return shader;
+    }
+
+    try {
+
+        const program = gl.createProgram();
+
+        gl.attachShader(
+            program,
+            compile(gl.VERTEX_SHADER, vertexSource)
+        );
+
+        gl.attachShader(
+            program,
+            compile(gl.FRAGMENT_SHADER, fragmentSource)
+        );
+
+        gl.linkProgram(program);
+
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+            throw new Error(gl.getProgramInfoLog(program));
+        }
+
+        gl.useProgram(program);
+
+        const buffer = gl.createBuffer();
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
+        gl.bufferData(
+            gl.ARRAY_BUFFER,
+            new Float32Array([
+                -1,-1,
+                 1,-1,
+                -1, 1,
+                 1, 1
+            ]),
+            gl.STATIC_DRAW
+        );
+
+        const position =
+            gl.getAttribLocation(program, "position");
+
+        gl.enableVertexAttribArray(position);
+
+        gl.vertexAttribPointer(
+            position, 2, gl.FLOAT, false, 0, 0
+        );
+
+        const timeLocation =
+            gl.getUniformLocation(program, "t");
+
+        let enabled = false;
+        let frames = 0;
+        let lastPoll = 0;
+
+        async function pollControl() {
+
+            try {
+
+                const response = await fetch(
+                    "/gpu_control.txt?t=" + Date.now(),
+                    { cache: "no-store" }
+                );
+
+                const value =
+                    (await response.text()).trim().toUpperCase();
+
+                enabled = value === "ON";
+
+            } catch (error) {
+
+                enabled = false;
+
+            }
+
+            status.innerText = enabled
+                ? "GPU WORKLOAD: ON"
+                : "GPU WORKLOAD: OFF";
+        }
+
+        async function render(now) {
+
+            if (enabled) {
+
+                gl.viewport(
+                    0, 0, canvas.width, canvas.height
+                );
+
+                gl.uniform1f(
+                    timeLocation,
+                    now * 0.001
+                );
+
+                gl.drawArrays(
+                    gl.TRIANGLE_STRIP, 0, 4
+                );
+
+                frames++;
+            }
+
+            if (now - lastPoll > 1000) {
+                await pollControl();
+                lastPoll = now;
+            }
+
+            requestAnimationFrame(render);
+        }
+
+        pollControl();
+        requestAnimationFrame(render);
+
+    } catch (error) {
+
+        status.innerText = "SHADER ERROR";
+        rendererText.innerText = String(error);
+
+    }
+}
+
+</script>
+
+</body>
+</html>

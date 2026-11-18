@@ -1,0 +1,5 @@
+task_class,duty_percent,avg_delta_Tctl_C,peak_delta_Tctl_C
+T1,25,4.288,6.759
+T2,50,9.464,12.650
+T3,75,11.087,14.096
+T4,100,13.317,16.765

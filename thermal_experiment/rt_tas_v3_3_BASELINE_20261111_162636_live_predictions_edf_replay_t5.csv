@@ -1,0 +1,2 @@
+task_id,resource,release_ms,start_ms,finish_ms,deadline_ms,deadline_feasible,cpu_safe_C,gpu_safe_C,decision
+T_DEADLINE,CPU,0,0,10,5,False,40.5000,31.0000,DEFER_DEADLINE

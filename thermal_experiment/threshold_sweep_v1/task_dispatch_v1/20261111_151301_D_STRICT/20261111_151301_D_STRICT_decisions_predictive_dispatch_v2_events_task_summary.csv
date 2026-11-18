@@ -1,0 +1,8 @@
+task_id,resource,release_s,execution_s,deadline_s,start_s,finish_s,attempts,thermal_deferrals,invalid_deferrals,stale_deferrals,status
+T1,CPU,0,1.0,30,15.0,16.0,16,10,5,0,DEADLINE_MET
+T2,GPU,0,2.0,50,18.0,20.0,19,13,5,0,DEADLINE_MET
+T3,CPU,5,1.5,60,17.0,18.5,1,0,0,0,DEADLINE_MET
+T4,GPU,10,1.5,55,46.0,47.5,27,15,11,0,DEADLINE_MET
+T5,CPU,15,1.0,50,16.0,17.0,1,0,0,0,DEADLINE_MET
+T6,GPU,20,1.0,70,49.0,50.0,2,1,0,0,DEADLINE_MET
+T7,CPU,25,1.2,65,25.0,26.2,1,0,0,0,DEADLINE_MET

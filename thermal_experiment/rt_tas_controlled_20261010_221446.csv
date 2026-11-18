@@ -1,0 +1,1 @@
+timestamp,elapsed_s,phase,cpu_tctl_C,gpu_edge_C,gpu_freq_MHz,gpu_activity_proxy,cpu6_freq_MHz,cpu_active,gpu_enabled
